@@ -79,6 +79,12 @@ font-size:40px;color:#B8A58A;font-weight:600;transition:transform .5s}
 footer{padding:64px 20px 110px;background:var(--wine-d);color:#F6E9E4}
 footer .nm{color:#F3D9A4;font-size:clamp(44px,11vw,60px)}
 
+.pol{cursor:zoom-in}
+#lb{position:fixed;inset:0;z-index:700;background:rgba(30,6,12,.94);display:none;align-items:center;justify-content:center}
+#lb.on{display:flex}
+#lb img{max-width:92vw;max-height:86vh;object-fit:contain;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#lb button{position:absolute;background:none;border:0;color:#fff;font-size:44px;line-height:1;cursor:pointer;padding:14px}
+#lb .x{top:6px;right:10px}#lb .pv{left:4px;top:50%}#lb .nx{right:4px;top:50%}
 /* floating controls + petals */
 .fab{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:600;height:46px;border-radius:999px;border:1.5px solid var(--gold);background:rgba(63,15,25,.92);color:#fff;cursor:pointer;font-family:var(--sans);font-size:13px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;justify-content:center}
 #mu{right:16px;width:46px;padding:0}
@@ -95,6 +101,7 @@ html[lang=mr] h2,html[lang=mr] .nm{line-height:1.4}
 </head>
 <body>
 
+<div id="lb" aria-hidden="true"><button class="x" aria-label="Close">&times;</button><button class="pv" aria-label="Previous">&#8249;</button><img alt=""><button class="nx" aria-label="Next">&#8250;</button></div>
 <audio id="bgm" src="music.mp3" loop preload="auto"></audio>
 
 <div id="gate" role="button" tabindex="0" aria-label="Open your wedding invitation">
@@ -252,6 +259,19 @@ html[lang=mr] h2,html[lang=mr] .nm{line-height:1.4}
     document.getElementById('s').textContent=z(s%60);
   }
   tick(); setInterval(tick,1000);
+
+  /* ---- photo viewer ---- */
+  var pics=[].slice.call(document.querySelectorAll('.pol img')), lb=document.getElementById('lb'), li=lb.querySelector('img'), ci=0;
+  function show(i){ci=(i+pics.length)%pics.length; li.src=pics[ci].src; lb.classList.add('on')}
+  pics.forEach(function(im,i){im.parentNode.addEventListener('click',function(){show(i)})});
+  lb.querySelector('.x').onclick=function(){lb.classList.remove('on')};
+  lb.querySelector('.pv').onclick=function(e){e.stopPropagation();show(ci-1)};
+  lb.querySelector('.nx').onclick=function(e){e.stopPropagation();show(ci+1)};
+  lb.addEventListener('click',function(e){if(e.target===lb)lb.classList.remove('on')});
+  document.addEventListener('keydown',function(e){if(!lb.classList.contains('on'))return;
+    if(e.key==='Escape')lb.classList.remove('on'); if(e.key==='ArrowLeft')show(ci-1); if(e.key==='ArrowRight')show(ci+1)});
+  var tx0=0; lb.addEventListener('touchstart',function(e){tx0=e.touches[0].clientX},{passive:true});
+  lb.addEventListener('touchend',function(e){var d=e.changedTouches[0].clientX-tx0; if(Math.abs(d)>50)show(ci+(d<0?1:-1))});
 
   /* ---- petals ---- */
   if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
