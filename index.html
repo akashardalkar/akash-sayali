@@ -220,8 +220,10 @@ html[lang=mr] h2,html[lang=mr] .nm{line-height:1.4}
     });
   }
   function wa(){
-    var msg=(guest?'Hi, I am '+guest+'. ':'')+'Hi, I will attend the wedding of Akash and Sayali.';
-    if(lang==='mr') msg=(guest?'नमस्कार, मी '+guest+'. ':'')+MR['Hi, I will attend the wedding of Akash and Sayali.'];
+    var msg = guest ? 'Hi, I am '+guest+" and I'll attend the wedding of Akash and Sayali."
+                    : "Hi, I'll attend the wedding of Akash and Sayali.";
+    if(lang==='mr') msg = guest ? 'नमस्कार, मी '+guest+', आकाश आणि सायली यांच्या विवाहाला नक्की उपस्थित राहीन.'
+                                : 'नमस्कार, मी आकाश आणि सायली यांच्या विवाहाला नक्की उपस्थित राहीन.';
     document.getElementById('wa').href='https://wa.me/919594189844?text='+encodeURIComponent(msg);
   }
   function setLang(l,silent){
